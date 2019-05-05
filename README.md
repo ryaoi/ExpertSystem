@@ -15,3 +15,8 @@ A + B + C => D
 
 ?BD
 ```
+
+Example for AST visualizer:
+```
+python3 genastdot.py example_easy.txt > ast.dot && dot -Tpng -o ast.png ast.dot
+```
