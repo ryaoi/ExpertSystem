@@ -96,7 +96,7 @@ def main():
     )
     argparser.add_argument(
         'fname',
-        help='Pascal source file'
+        help='input file'
     )
     args = argparser.parse_args()
     fname = args.fname
