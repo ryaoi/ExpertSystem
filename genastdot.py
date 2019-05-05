@@ -7,7 +7,9 @@
 import argparse
 import textwrap
 
-from ExpertSystem import Lexer, Parser, NodeVisitor
+from Lexer import Lexer
+from Parser import Parser
+from Interpreter import NodeVisitor
 
 class ASTVisualizer(NodeVisitor):
     def __init__(self, parser):
