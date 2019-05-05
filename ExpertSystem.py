@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import sys
 import argparse
@@ -20,7 +21,7 @@ def ExpertSystem(inputFile, verbose):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", \
-					help="increase output verbosity", action="store_true")
+		help="increase output verbosity", action="store_true")
     parser.add_argument("input_file")
     args = parser.parse_args()
     ExpertSystem(args.input_file, args.verbose)

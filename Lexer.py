@@ -7,7 +7,10 @@ class Lexer():
     def __init__(self, text):
         self.text = text
         self.pos = 0
-        self.current_char = self.text[self.pos]
+        if text:
+            self.current_char = self.text[self.pos]
+        else:
+            self.current_char = None
 
     def error(self):
         line_count = self.text[:self.pos].count("\n")
