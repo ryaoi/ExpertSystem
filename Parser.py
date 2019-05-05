@@ -11,7 +11,21 @@ class Parser():
         self.queries = None
     
     def error(self):
-        raise Exception('[-] Invalid syntax {}'.format(self.current_token))
+        line_count = self.lexer.text[:self.lexer.pos - 1].count("\n")
+        lines = self.lexer.text.split("\n")
+        count = 0
+        index = 0
+        for i, line in enumerate(lines):
+            if i == line_count:
+                while count != self.lexer.pos:
+                    count += 1
+                    index += 1
+            else:
+                count += len(line) + 1
+        line = lines[line_count]
+        arrow = " "*(index - 1) + "^"
+        raise Exception('[-] Invalid syntax {} at line:{}\n{}\n{}'\
+                .format(self.current_token, line_count + 1, line, arrow))
 
     def eat(self, token_type):
         if self.current_token.type == token_type:
