@@ -134,12 +134,14 @@ class Interpreter(NodeVisitor):
             if H in fact:
                 True
             else if H inside the rule:
+				if H aready in search history:
+					[-] infinite loop!
                 for each rule inside rules:
                     results = []
                     for each antecedent inside rule:
                         results += backward_chaining(antecedent)
                     if false and true in results:
-                        Rules are corrupted!!!!
+                        [-] Rules are corrupted!
                     if true in results:
                         True
                     else
