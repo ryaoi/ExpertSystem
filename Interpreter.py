@@ -159,13 +159,13 @@ class Interpreter(NodeVisitor):
             return True
         rules = self.search_rules(self.tree, node.value)
         if len(rules):
-            if node not in self.search:
-                self.search.append(node)
-            else:
-                print("[-] Error: inifinite loop")
-                sys.exit(1)
             results = []
             for index, rule in enumerate(rules):
+                if node not in self.search:
+                    self.search.append(node)
+                else:
+                    print("[-] Error: inifinite loop")
+                    sys.exit(1)
                 if self.verbose:
                     print("{}Rule {}.{}:["\
                             .format("=="*self.recursive, self.recursive, index + 1), end="")
