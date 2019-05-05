@@ -109,7 +109,7 @@ class Interpreter(NodeVisitor):
             else:
                 left = self.visit(node.left)
                 right = self.visit(node.right)
-                return self.hadle_or(left, right)
+                return self.handle_or(left, right)
         elif node.op.type == XOR:
             if result is not None:
                 return None
