@@ -177,7 +177,9 @@ class Interpreter(NodeVisitor):
                 sys.exit(1)
             if True in results:
                 return True
-            if None in results:
+            elif False in results:
+                return False
+            else:
                 return None
         else:
             return False
