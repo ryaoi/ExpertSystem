@@ -41,8 +41,11 @@ class Parser():
 
     def rule_statement(self):
         nodes = self.statement_list()
-
+        if nodes is None:
+            return None
+    
         root = Rule()
+
         for node in nodes:
             root.children.append(node)
         return root
@@ -84,7 +87,6 @@ class Parser():
                 self.eat(XOR)
             elif token.type == OR:
                 self.eat(OR)
-
             node = Op(left=node, op=token, right=self.factor())
         return node
 
@@ -104,8 +106,8 @@ class Parser():
 
     def statement(self):
         """
-        statement: rule
-                    | INIT (FACTOR)*
+        statement: rule NEWLINE
+                    | INIT (FACTOR)* NEWLINE
                     | QUERY (FACTOR)*
         """
 
@@ -115,6 +117,7 @@ class Parser():
             while self.current_token.type == FACTOR:
                 self.factors[self.current_token.value] = True
                 self.eat(FACTOR)
+            self.eat(NEWLINE)
             node = NoOp()
         elif self.current_token.type == QUERY:
             self.eat(QUERY)
@@ -125,23 +128,20 @@ class Parser():
             node = NoOp()
         else:
             node = self.rule()
+            self.eat(NEWLINE)
         return node
 
     def statement_list(self):
         """
-        statement_list: (NEWLINE)* statement
-                        | statement NEWLINE statement_list
+        statement_list: ((NEWLINE)* statement)*
         """
-        while self.current_token.type == NEWLINE:
-            self.eat(NEWLINE)
-
-        node = self.statement()
-        
-        results = [node]
-
-        while self.current_token.type == NEWLINE:
+        results = None
+        while self.current_token.type != EOF:
             while self.current_token.type == NEWLINE:
                 self.eat(NEWLINE)
             if self.current_token.type != EOF:
-                results.append(self.statement())
+                if results:
+                   results.append(self.statement())
+                else:
+                    results = [self.statement()]
         return results

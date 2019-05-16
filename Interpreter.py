@@ -55,6 +55,9 @@ class Interpreter(NodeVisitor):
     def interpret(self):
         try:
             self.tree = self.parser.parse()
+            """
+            parse() -> creer l'arbre
+            """
         except Exception as e:
             print(e)
             sys.exit(1)
@@ -68,10 +71,13 @@ class Interpreter(NodeVisitor):
         self.queries = self.parser.queries
         for query in self.queries:
             token = Token(FACTOR, query)
-            result = self.visit_Factor(Factor(token))
-            if result is None:
-                result = "Undefined"
-            print("{}:{}".format(query, result))
+            try:
+                result = self.visit_Factor(Factor(token))
+                if result is None:
+                    result = "Undefined"
+                print("{}:{}".format(query, result))
+            except Exception as e:
+                print("{}:{}".format(query, e))
 
     def visit_NegOp(self, node, result=None):
         if node.op.type == NEG:
@@ -83,8 +89,10 @@ class Interpreter(NodeVisitor):
             return None
         elif left == None:
             return right
-        else:
+        elif right == None:
             return left
+        else:
+            return left or right
 
     @staticmethod
     def handle_xor(left, right):
@@ -98,6 +106,12 @@ class Interpreter(NodeVisitor):
             left = self.visit(node.left, result=result)
             right = self.visit(node.right, result=result)
             if result is not None:
+                if left == None and right == None:
+                    return None
+                if left == None:
+                    return right
+                if right == None:
+                    return left
                 return left or right
             else:
                 if left == None or right == None:
@@ -144,6 +158,8 @@ class Interpreter(NodeVisitor):
                         [-] Rules are corrupted!
                     if true in results:
                         True
+                    else if flase in results:
+                        false
                     else
                         None
             else:
@@ -155,6 +171,7 @@ class Interpreter(NodeVisitor):
                 if self.search[-1].value == node.token.value:
                     self.search.pop()
                     return result
+            return None
         if node.value in self.factors:
             return True
         rules = self.search_rules(self.tree, node.value)
@@ -164,8 +181,7 @@ class Interpreter(NodeVisitor):
                 if node not in self.search:
                     self.search.append(node)
                 else:
-                    print("[-] Error: inifinite loop")
-                    sys.exit(1)
+                    raise Exception("inifinite loop")
                 if self.verbose:
                     print("{}Rule {}.{}:["\
                             .format("=="*self.recursive, self.recursive, index + 1), end="")
@@ -173,8 +189,7 @@ class Interpreter(NodeVisitor):
                     print("]")
                 results.append(self.visit(rule))
             if False in results and True in results:
-                print("[-] Rules are not correct")
-                sys.exit(1)
+                raise Exception("Rules are not correct")
             if True in results:
                 return True
             elif False in results:

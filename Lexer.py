@@ -28,7 +28,7 @@ class Lexer():
             self.current_char = self.text[self.pos]
 
     def skip_whitespace(self):
-        while self.current_char is not None and self.current_char.isspace():
+        while self.current_char is not None and self.current_char.isspace() and self.current_char is not "\n":
             self.advance()
 
     def skip_comment(self):
